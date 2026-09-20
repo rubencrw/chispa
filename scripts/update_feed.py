@@ -134,8 +134,9 @@ def ask_claude(cands, prefs):
         "x-api-key": API_KEY, "anthropic-version": "2023-06-01", "content-type": "application/json"},
         json={"model": MODEL, "max_tokens": 20000, "system": SYSTEM,
               "messages": [{"role": "user", "content": user}]})
-       if not r.ok:
-       log("Respuesta de la API:", r.status_code, r.text[:2000])
+        if not r.ok:
+        log("Respuesta de la API:", r.status_code, r.text[:2000])
+    r.raise_for_status()
     text = "".join(b.get("text", "") for b in r.json().get("content", []) if b.get("type") == "text")
     text = re.sub(r"^```(json)?|```$", "", text.strip()).strip()
     return json.loads(text[text.find("{"): text.rfind("}") + 1])
